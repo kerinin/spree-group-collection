@@ -3,8 +3,8 @@
 
 class ObjectGroupExtension < Spree::Extension
   version "1.0"
-  description "Describe your extension here"
-  url "http://yourwebsite.com/object_group"
+  description "Object Groups: Collections of Product Groups (or groups of other classes)"
+  url "http://github.com/kerinin/spree-object-group"
 
   # Please use object_group/config/routes.rb instead for extension routes.
 
