@@ -65,4 +65,39 @@ class GroupCollectionTest < Test::Unit::TestCase
       assert @user.object_groups.contain? @gc1
     end
   end
+
+  ###################### FROM URL ########################################
+  context "from url" do
+    setup do
+      @gc1 = Factory :group_collection
+      @gc2 = Factory :group_collection
+      
+      @pg1 = Factory :product_group
+      @pg2 = Factory :product_group
+      
+      @gc = GroupCollection.from_url('/c/collections/gc1+gc2/product_groups/pg1+pg2')
+    end
+
+    should "not be saved and have sane defaults" do
+      assert(@gc.kind_of?(GroupCollection),
+        "GroupCollection is a #{@og.class.name} instead of Group Collection")
+      assert(@gc.new_record?,
+        "GroupCollection is not new record")
+      assert(@gc.name.blank?,
+        "GroupCollection.name is not blank but #{@pg.name}")
+      assert(@gc.permalink.blank?,
+        "ObjectGroup.permalink is not blank but #{@pg.permalink}")
+    end
+
+    should "contain the correct child collections" do
+      assert @gc.children.contain? @gc1
+      assert @gc.children.contain? @gc2
+    end
+    
+    should "contain the correct product groups" do
+      assert @gc.groups.contain? @pg1
+      assert @gc.groups.contain? @pg2
+    end
+  end
 end
+
