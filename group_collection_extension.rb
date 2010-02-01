@@ -20,6 +20,10 @@ class GroupCollectionExtension < Spree::Extension
     # end
     
     # Define dynamic scopes
+    # Dynamic scopes can be included in a Product Group by using the scope's name
+    # Arguments are passed as usual, but the scope should have access to
+    # stateful information (ie, the current request or logged-in user)
+    #
     # Scopes::Dynamic.module_eval do
     #   def price_range(low=0, high=nil)
     #     scopes = []
