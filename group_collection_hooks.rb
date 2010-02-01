@@ -1,4 +1,4 @@
-class ObjectGroupHooks < Spree::ThemeSupport::HookListener
+class GroupCollectionHooks < Spree::ThemeSupport::HookListener
 
   #
   # In this file you can modify the content of the hooks available in the default templates

@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
  
-class ObjectGroupTest < Test::Unit::TestCase
-  context "An Object Group" do
+class GroupCollectionTest < Test::Unit::TestCase
+  context "A Group Collection" do
     setup do
       @user = Factory :user
       
@@ -17,8 +17,8 @@ class ObjectGroupTest < Test::Unit::TestCase
       @pg2.add_scope 'in_name', ['prod2']
       @pg3.add_scope 'in_name', ['prod3']
       
-      @og1 = Factory :object_group, :groups => [@pg1, @pg2], :user => @user
-      @og2 = Factory :object_group, :groups => [@pg3], :children => [@og1]
+      @gc1 = Factory :group_collection, :groups => [@pg1, @pg2], :user => @user
+      @gc2 = Factory :group_collection, :groups => [@pg3], :children => [@og1]
     end
     
     teardown do
@@ -26,43 +26,43 @@ class ObjectGroupTest < Test::Unit::TestCase
     end
     
     should "have some values" do
-      assert @og1.name
-      assert @og1.description
+      assert @gc1.name
+      assert @gc1.description
     end
     
     should "generate a permalink" do
-      assert @og1.permalink
+      assert @gc1.permalink
     end
     
     should "have associated product groups" do
-      assert @og1.groups.contain? @pg1
+      assert @gc1.groups.contain? @pg1
     end
     
     should "have associated children" do
-      assert @og2.children.contain? @og1
+      assert @gc2.children.contain? @gc1
     end
     
     should "inherit children's product groups" do
-      assert @og2.groups.contain? @pg1
+      assert @gc2.groups.contain? @pg1
     end
     
     should "return the union of it's product group scopes" do
-      assert @og1.products.contain? @prod1
-      assert @og1.products.contain? @prod2
+      assert @gc1.products.contain? @prod1
+      assert @gc1.products.contain? @prod2
     end
     
     should "not return products outside it's scopes" do
-      assert !( @og1.products.contain? @prod3 )
+      assert !( @gc1.products.contain? @prod3 )
     end
     
     should "return it's children's products" do
-      assert @og2.products.contain? @prod1
-      assert @og2.products.contain? @prod2
+      assert @gc2.products.contain? @prod1
+      assert @gc2.products.contain? @prod2
     end
     
     should "allow associated users" do
-      assert_equal @user, @og1.user
-      assert @user.object_groups.contain? @og1
+      assert_equal @user, @gc1.user
+      assert @user.object_groups.contain? @gc1
     end
   end
 end

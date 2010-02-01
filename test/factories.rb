@@ -1,7 +1,7 @@
-Factory.sequence(:object_group_sequence) {|n| "Object Group ##{n} - #{rand(9999)}"}
+Factory.sequence(:group_collection_sequence) {|n| "Group Collection ##{n} - #{rand(9999)}"}
 
-Factory.define :object_group do |f|
-  f.name { Factory.next(:object_group_sequence) }
+Factory.define :group_collection do |f|
+  f.name { Factory.next(:group_collection_sequence) }
   f.description { Faker::Lorem.paragraphs(rand(5)+1).join("\n") }
 end
 

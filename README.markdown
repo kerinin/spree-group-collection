@@ -1,7 +1,7 @@
-Object Group
+Group Collection
 =========
 
-ObjectGroup is an extension to Spree's ProductGroup class which adds the following functionality:
+Group Collection is an extension to Spree's Product Group class which adds the following functionality:
 
 - Compose multiple Product Groups into a single named collection with it's own permalink
 - Union collections (as opposed to intersection collections)
