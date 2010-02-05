@@ -1,3 +1,13 @@
+Factory.sequence(:role_sequence) {|n| "Role ##{n}"}
+
+Factory.define(:role) do |record|
+  record.name { Factory.next(:role_sequence) }
+end
+
+Factory.define(:admin_role, :parent => :role) do |r|
+  r.name "admin"
+end
+
 Factory.sequence :login do |n|
   Faker::Internet.user_name + n.to_s
 end
@@ -7,6 +17,10 @@ Factory.define(:user) do |record|
   record.login { Factory.next(:login) }
   record.password "spree"
   record.password_confirmation "spree"
+end
+
+Factory.define(:admin_user, :parent => :user) do |u|
+  u.roles { [Role.find_by_name("admin") || Factory(:admin_role)]}
 end
 
 Factory.sequence(:group_collection_sequence) {|n| "Group Collection ##{n} - #{rand(9999)}"}

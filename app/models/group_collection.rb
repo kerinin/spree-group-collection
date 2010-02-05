@@ -11,6 +11,8 @@ class GroupCollection < ActiveRecord::Base
   
   before_save :set_permalink
   
+  make_permalink :with => :permalink
+  
   def to_param
     return self.permalink
   end
