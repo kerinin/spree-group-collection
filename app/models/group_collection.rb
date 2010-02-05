@@ -41,7 +41,7 @@ class GroupCollection < ActiveRecord::Base
     end
     
     if product_groups.nil? && children.count == 1
-      gc = GroupCollection.find_by_name( children[0] )
+      gc = GroupCollection.find_by_permalink( children[0] )
     else
       # NOTE: this will fail silently if a requested name isn't found
       children.map!{|permalink| child = GroupCollection.find_by_permalink(permalink); child ? child : nil }.compact! unless children.nil?

@@ -53,7 +53,28 @@ class GroupCollectionTest < Test::Unit::TestCase
     end
   end
 
-  context "from gc named url" do
+  context "from composite gc named url" do
+    setup do   
+      @pg1 = Factory :product_group
+      @pg2 = Factory :product_group
+      
+      @gc1 = Factory :group_collection, :product_groups => [@pg1]
+      @gc2 = Factory :group_collection, :product_groups => [@pg2] 
+      
+      @gc = GroupCollection.from_url("/c/#{@gc1.to_param}")
+    end
+
+    should "be saved" do
+      assert(@gc.kind_of?(GroupCollection),
+        "GroupCollection is a #{@og.class.name} instead of Group Collection")
+      assert(!@gc.new_record?,
+        "GroupCollection is not new record")
+      assert_equal @gc, @gc1
+    end
+  end
+
+
+  context "from composite gc named url" do
     setup do   
       @pg1 = Factory :product_group
       @pg2 = Factory :product_group
@@ -81,7 +102,7 @@ class GroupCollectionTest < Test::Unit::TestCase
     end
   end
   
-  context "from pg named url" do
+  context "from composite pg named url" do
     setup do   
       @pg1 = Factory :product_group
       @pg2 = Factory :product_group
@@ -109,7 +130,7 @@ class GroupCollectionTest < Test::Unit::TestCase
     end
   end
   
-  context "from gc+pg named url" do
+  context "from composite gc+pg named url" do
     setup do   
       @pg1 = Factory :product_group
       @pg2 = Factory :product_group
