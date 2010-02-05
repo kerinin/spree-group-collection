@@ -17,15 +17,15 @@ class CreateGroupCollection < ActiveRecord::Migration
       g.belongs_to :group_collection
       g.belongs_to :product_group
     end
-    add_index :product_groupings, :group_collection
-    add_index :product_groupings, :product_group
+    add_index :product_groupings, :group_collection_id
+    add_index :product_groupings, :product_group_id
     
-    create table :group_collection_branches do |t|
+    create_table :group_collection_branches do |t|
       t.belongs_to :parent
       t.belongs_to :child
     end
-    add_index :group_collection_branches, :parent
-    add_index :group_collection_branches, :child
+    add_index :group_collection_branches, :parent_id
+    add_index :group_collection_branches, :child_id
     
   end
 
@@ -35,12 +35,12 @@ class CreateGroupCollection < ActiveRecord::Migration
     remove_index :group_collections, :user_id
     drop_table :group_collections
     
-    remove_index :product_groupings, :group_collection
-    remove_index :product_groupings, :product_group
+    remove_index :product_groupings, :group_collection_id
+    remove_index :product_groupings, :product_group_id
     drop_table :product_groupings
     
-    remove_index :group_collection_branches, :parent
-    remove_index :group_collection_branches, :child
+    remove_index :group_collection_branches, :parent_id
+    remove_index :group_collection_branches, :child_id
     drop_table :group_collection_branches
   end
 end
