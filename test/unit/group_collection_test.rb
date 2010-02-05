@@ -17,7 +17,7 @@ class GroupCollectionTest < Test::Unit::TestCase
       @pg2.add_scope 'in_name', ['prod2']
       @pg3.add_scope 'in_name', ['prod3']
       
-      @gc1 = Factory :group_collection, :product_groups => [@pg1, @pg2], :user => @user
+      @gc1 = Factory :group_collection, :product_groups => [@pg1, @pg2], :user => @user, :name => "group collection"
       @gc2 = Factory :group_collection, :product_groups => [@pg3], :children => [@gc1]
     end
     
@@ -32,7 +32,11 @@ class GroupCollectionTest < Test::Unit::TestCase
     end
     
     should "generate a permalink" do
-      assert @gc1.permalink
+      assert @gc2.permalink
+    end
+    
+    should "generate a user-specific permalink for owned gc's" do
+      assert_equal "group-collection#{@user.id}", @gc1.permalink
     end
     
     should "have associated product product_groups" do

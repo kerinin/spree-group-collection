@@ -66,7 +66,11 @@ class GroupCollection < ActiveRecord::Base
   end
   
   def set_permalink
-    self.permalink = self.name.to_url
+    if self.user.blank?
+      self.permalink = self.name.to_url
+    else
+      self.permalink = "#{self.name.to_url}#{self.user.id}"      
+    end
   end
   
   def to_s

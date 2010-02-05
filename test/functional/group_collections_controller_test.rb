@@ -1,5 +1,14 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
+# NOTE: User tests!
+# permalink collisions
+# add current user when instantiated (different action for users and non-users? admin required for non?)
+# destroy dependent (and from user)
+
+# editing!
+# select by permalink, require admin user to modify non-owned gc's
+# update existing rather than requiring unique
+
 class GroupCollectionsControllerTest < ActionController::TestCase
   context "given data" do
     setup do
