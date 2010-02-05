@@ -17,8 +17,8 @@ class GroupCollectionTest < Test::Unit::TestCase
       @pg2.add_scope 'in_name', ['prod2']
       @pg3.add_scope 'in_name', ['prod3']
       
-      @gc1 = Factory :group_collection, :groups => [@pg1, @pg2], :user => @user
-      @gc2 = Factory :group_collection, :groups => [@pg3], :children => [@og1]
+      @gc1 = Factory :group_collection, :product_groups => [@pg1, @pg2], :user => @user
+      @gc2 = Factory :group_collection, :product_groups => [@pg3], :children => [@gc1]
     end
     
     teardown do
@@ -27,42 +27,41 @@ class GroupCollectionTest < Test::Unit::TestCase
     
     should "have some values" do
       assert @gc1.name
-      assert @gc1.description
     end
     
     should "generate a permalink" do
       assert @gc1.permalink
     end
     
-    should "have associated product groups" do
-      assert @gc1.groups.contain? @pg1
+    should "have associated product product_groups" do
+      assert @gc1.product_groups.include? @pg1
     end
     
     should "have associated children" do
-      assert @gc2.children.contain? @gc1
+      assert @gc2.children.include? @gc1
     end
     
-    should "inherit children's product groups" do
-      assert @gc2.groups.contain? @pg1
+    should "inherit children's product product_groups" do
+      assert @gc2.product_groups.include? @pg1
     end
     
     should "return the union of it's product group scopes" do
-      assert @gc1.products.contain? @prod1
-      assert @gc1.products.contain? @prod2
+      assert @gc1.products.include? @prod1
+      assert @gc1.products.include? @prod2
     end
     
     should "not return products outside it's scopes" do
-      assert !( @gc1.products.contain? @prod3 )
+      assert !( @gc1.products.include? @prod3 )
     end
     
     should "return it's children's products" do
-      assert @gc2.products.contain? @prod1
-      assert @gc2.products.contain? @prod2
+      assert @gc2.products.include? @prod1
+      assert @gc2.products.include? @prod2
     end
     
     should "allow associated users" do
       assert_equal @user, @gc1.user
-      assert @user.object_groups.contain? @gc1
+      assert @user.group_collections.include? @gc1
     end
   end
 
@@ -71,8 +70,8 @@ class GroupCollectionTest < Test::Unit::TestCase
       @pg1 = Factory :product_group
       @pg2 = Factory :product_group
       
-      @gc1 = Factory :group_collection, :groups => [@pg1]
-      @gc2 = Factory :group_collection, :groups => [@pg2] 
+      @gc1 = Factory :group_collection, :product_groups => [@pg1]
+      @gc2 = Factory :group_collection, :product_groups => [@pg2] 
       
       @gc = GroupCollection.from_url('/c/#{gc1.to_param}+#{gc2.to_param}')
     end
@@ -88,14 +87,14 @@ class GroupCollectionTest < Test::Unit::TestCase
         "ObjectGroup.permalink is not blank but #{@pg.permalink}")
     end
 
-    should "contain the correct child collections" do
-      assert @gc.children.contain? @gc1
-      assert @gc.children.contain? @gc2
+    should "include the correct child collections" do
+      assert @gc.children.include? @gc1
+      assert @gc.children.include? @gc2
     end
     
-    should "contain the correct product groups" do
-      assert @gc.groups.contain? @pg1
-      assert @gc.groups.contain? @pg2
+    should "include the correct product product_groups" do
+      assert @gc.product_groups.include? @pg1
+      assert @gc.product_groups.include? @pg2
     end
   end
   
@@ -104,8 +103,8 @@ class GroupCollectionTest < Test::Unit::TestCase
       @pg1 = Factory :product_group
       @pg2 = Factory :product_group
       
-      @gc1 = Factory :group_collection, :groups => [@pg1]
-      @gc2 = Factory :group_collection, :groups => [@pg2] 
+      @gc1 = Factory :group_collection, :product_groups => [@pg1]
+      @gc2 = Factory :group_collection, :product_groups => [@pg2] 
       
       @gc = GroupCollection.from_url('/c//#{@pg1.to_param}+#{@pg2.to_param}')
     end
@@ -121,9 +120,9 @@ class GroupCollectionTest < Test::Unit::TestCase
         "ObjectGroup.permalink is not blank but #{@pg.permalink}")
     end
     
-    should "contain the correct product groups" do
-      assert @gc.groups.contain? @pg1
-      assert @gc.groups.contain? @pg2
+    should "include the correct product product_groups" do
+      assert @gc.product_groups.include? @pg1
+      assert @gc.product_groups.include? @pg2
     end
   end
   
@@ -149,14 +148,14 @@ class GroupCollectionTest < Test::Unit::TestCase
         "ObjectGroup.permalink is not blank but #{@pg.permalink}")
     end
 
-    should "contain the correct child collections" do
-      assert @gc.children.contain? @gc1
-      assert @gc.children.contain? @gc2
+    should "include the correct child collections" do
+      assert @gc.children.include? @gc1
+      assert @gc.children.include? @gc2
     end
         
-    should "contain the correct product groups" do
-      assert @gc.groups.contain? @pg1
-      assert @gc.groups.contain? @pg2
+    should "include the correct product product_groups" do
+      assert @gc.product_groups.include? @pg1
+      assert @gc.product_groups.include? @pg2
     end
   end
   
@@ -179,17 +178,17 @@ class GroupCollectionTest < Test::Unit::TestCase
         "ObjectGroup.permalink is not blank but #{@pg.permalink}")
     end
     
-    should "include child groups" do
+    should "include child product_groups" do
       assert @gc.children.include? @gc1
       assert @gc.children.include? @gc2
     end
     
-    should "generate correct product groups" do
-      assert_equal 2, @gc.groups.count
+    should "generate correct product product_groups" do
+      assert_equal 2, @gc.product_groups.count
       
-      assert @gc.permalink.contain? @gc.groups[0].permalink
-      assert @gc.permalink.contain? @gc.groups[1].permalink
-      assert_not_equal @gc.groups[1].permalink, @gc_groups[0].permalink
+      assert @gc.permalink.include? @gc.product_groups[0].permalink
+      assert @gc.permalink.include? @gc.product_groups[1].permalink
+      assert_not_equal @gc.product_groups[1].permalink, @gc_product_groups[0].permalink
     end
 
   end

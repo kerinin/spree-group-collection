@@ -37,5 +37,9 @@ class GroupCollectionExtension < Spree::Extension
     #   end
     #   module_function :price_range
     # end
+    
+    User.class_eval do
+      has_many :group_collections
+    end
   end
 end
