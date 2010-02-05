@@ -54,9 +54,9 @@ class GroupCollection < ActiveRecord::Base
     
     gc
   end
-
-  def products
-    return true
+  
+  def all_product_groups
+    [ self.product_groups + self.children.map{ |gc| gc.all_product_groups } ].flatten.uniq
   end
     
   def to_url

@@ -43,22 +43,8 @@ class GroupCollectionTest < Test::Unit::TestCase
       assert @gc2.children.include? @gc1
     end
     
-    should_eventually "inherit children's product product_groups" do
-      assert @gc2.product_groups.include? @pg1
-    end
-    
-    should_eventually "return the union of it's product group scopes" do
-      assert @gc1.products.include? @prod1
-      assert @gc1.products.include? @prod2
-    end
-    
-    should_eventually "not return products outside it's scopes" do
-      assert !( @gc1.products.include? @prod3 )
-    end
-    
-    should_eventually "return it's children's products" do
-      assert @gc2.products.include? @prod1
-      assert @gc2.products.include? @prod2
+    should "inherit children's product_groups" do
+      assert @gc2.all_product_groups.include? @pg1
     end
     
     should "allow associated users" do
@@ -83,10 +69,10 @@ class GroupCollectionTest < Test::Unit::TestCase
         "GroupCollection is a #{@og.class.name} instead of Group Collection")
       assert(@gc.new_record?,
         "GroupCollection is not new record")
-      #assert(@gc.name.blank?,
-      #  "GroupCollection.name is not blank but #{@pg.name}")
-      #assert(@gc.permalink.blank?,
-      #  "ObjectGroup.permalink is not blank but #{@pg.permalink}")
+      assert(@gc.name.blank?,
+        "GroupCollection.name is not blank but #{@gc.name}")
+      assert(@gc.permalink.blank?,
+        "ObjectGroup.permalink is not blank but #{@gc.permalink}")
     end
 
     should "include the correct child collections" do
@@ -111,10 +97,10 @@ class GroupCollectionTest < Test::Unit::TestCase
         "GroupCollection is a #{@og.class.name} instead of Group Collection")
       assert(@gc.new_record?,
         "GroupCollection is not new record")
-      #assert(@gc.name.blank?,
-      #  "GroupCollection.name is not blank but #{@pg.name}")
-      #assert(@gc.permalink.blank?,
-      #  "ObjectGroup.permalink is not blank but #{@pg.permalink}")
+      assert(@gc.name.blank?,
+        "GroupCollection.name is not blank but #{@gc.name}")
+      assert(@gc.permalink.blank?,
+        "ObjectGroup.permalink is not blank but #{@gc.permalink}")
     end
     
     should "include the correct product_groups" do
@@ -139,10 +125,10 @@ class GroupCollectionTest < Test::Unit::TestCase
         "GroupCollection is a #{@og.class.name} instead of Group Collection")
       assert(@gc.new_record?,
         "GroupCollection is not new record")
-      #assert(@gc.name.blank?,
-      #  "GroupCollection.name is not blank but #{@pg.name}")
-      #assert(@gc.permalink.blank?,
-      #  "ObjectGroup.permalink is not blank but #{@pg.permalink}")
+      assert(@gc.name.blank?,
+        "GroupCollection.name is not blank but #{@gc.name}")
+      assert(@gc.permalink.blank?,
+        "ObjectGroup.permalink is not blank but #{@gc.permalink}")
     end
 
     should "include the correct child collections" do
