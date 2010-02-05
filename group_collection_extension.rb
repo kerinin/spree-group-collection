@@ -37,43 +37,5 @@ class GroupCollectionExtension < Spree::Extension
     #   end
     #   module_function :price_range
     # end
-
-    ProductScope.class_eval do
-      extend Scopes::Dynamic
-      
-      def apply_scopes( scopish )
-        scoped = scopish
-        ProductScope.send( self.name, *self.arguments ).each do |scope|
-          scoped = scope.apply_on( scopish )
-        end
-        scoped
-      end
-      
-      # Get all products with this scope
-      def products
-        if Scopes::Dynamic.respond_to?(self.name)
-          apply_scopes( Product )
-        elsif Product.condition?(self.name)
-          Product.send(self.name, *self.arguments)
-        end
-      end
-
-      # Applies product scope on Product model or another named scope
-      def apply_on(another_scope)
-        if Scopes::Dynamic.respond_to?(self.name)
-          apply_scopes( another_scope )
-        else
-          another_scope.send(self.name, *self.arguments)
-        end
-      end  
-      
-      # checks validity of the named scope (if it's safe and can be applied on Product)
-      def validate
-        errors.add(:name, "is not propper scope name") unless ( Product.condition?(self.name) || Scopes::Dynamic.respond_to?(self.name) )
-        apply_on(Product)
-      rescue Exception
-        errors.add(:arguments, "arguments are incorrect")
-      end
-    end
   end
 end

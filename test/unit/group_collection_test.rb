@@ -66,16 +66,15 @@ class GroupCollectionTest < Test::Unit::TestCase
     end
   end
 
-  ###################### FROM URL ########################################
-  context "from url" do
-    setup do
-      @gc1 = Factory :group_collection
-      @gc2 = Factory :group_collection
-      
+  context "from gc named url" do
+    setup do   
       @pg1 = Factory :product_group
       @pg2 = Factory :product_group
       
-      @gc = GroupCollection.from_url('/c/collections/gc1+gc2/product_groups/pg1+pg2')
+      @gc1 = Factory :group_collection, :groups => [@pg1]
+      @gc2 = Factory :group_collection, :groups => [@pg2] 
+      
+      @gc = GroupCollection.from_url('/c/#{gc1.to_param}+#{gc2.to_param}')
     end
 
     should "not be saved and have sane defaults" do
@@ -98,6 +97,101 @@ class GroupCollectionTest < Test::Unit::TestCase
       assert @gc.groups.contain? @pg1
       assert @gc.groups.contain? @pg2
     end
+  end
+  
+  context "from pg named url" do
+    setup do   
+      @pg1 = Factory :product_group
+      @pg2 = Factory :product_group
+      
+      @gc1 = Factory :group_collection, :groups => [@pg1]
+      @gc2 = Factory :group_collection, :groups => [@pg2] 
+      
+      @gc = GroupCollection.from_url('/c//#{@pg1.to_param}+#{@pg2.to_param}')
+    end
+
+    should "not be saved and have sane defaults" do
+      assert(@gc.kind_of?(GroupCollection),
+        "GroupCollection is a #{@og.class.name} instead of Group Collection")
+      assert(@gc.new_record?,
+        "GroupCollection is not new record")
+      assert(@gc.name.blank?,
+        "GroupCollection.name is not blank but #{@pg.name}")
+      assert(@gc.permalink.blank?,
+        "ObjectGroup.permalink is not blank but #{@pg.permalink}")
+    end
+    
+    should "contain the correct product groups" do
+      assert @gc.groups.contain? @pg1
+      assert @gc.groups.contain? @pg2
+    end
+  end
+  
+  context "from gc+pg named url" do
+    setup do   
+      @pg1 = Factory :product_group
+      @pg2 = Factory :product_group
+      
+      @gc1 = Factory :group_collection
+      @gc2 = Factory :group_collection 
+      
+      @gc = GroupCollection.from_url('/c/#{@gc1.to_param}+#{@gc2.to_param}/#{@pg1.to_param}+#{@pg2.to_param}')
+    end
+
+    should "not be saved and have sane defaults" do
+      assert(@gc.kind_of?(GroupCollection),
+        "GroupCollection is a #{@og.class.name} instead of Group Collection")
+      assert(@gc.new_record?,
+        "GroupCollection is not new record")
+      assert(@gc.name.blank?,
+        "GroupCollection.name is not blank but #{@pg.name}")
+      assert(@gc.permalink.blank?,
+        "ObjectGroup.permalink is not blank but #{@pg.permalink}")
+    end
+
+    should "contain the correct child collections" do
+      assert @gc.children.contain? @gc1
+      assert @gc.children.contain? @gc2
+    end
+        
+    should "contain the correct product groups" do
+      assert @gc.groups.contain? @pg1
+      assert @gc.groups.contain? @pg2
+    end
+  end
+  
+  context "from url" do
+    setup do   
+      @gc1 = Factory :group_collection
+      @gc2 = Factory :group_collection 
+          
+      @gc = GroupCollection.from_url('/c/#{@gc1.to_param}+#{@gc2.to_param}/name_like_any/one,two,three/master_price_lt/30/descend_by_name+name_like_any/four,five,six/master_price_lt/50/descend_by_name')
+    end
+
+    should "not be saved and have sane defaults" do
+      assert(@gc.kind_of?(GroupCollection),
+        "GroupCollection is a #{@og.class.name} instead of Group Collection")
+      assert(@gc.new_record?,
+        "GroupCollection is not new record")
+      assert(@gc.name.blank?,
+        "GroupCollection.name is not blank but #{@pg.name}")
+      assert(@gc.permalink.blank?,
+        "ObjectGroup.permalink is not blank but #{@pg.permalink}")
+    end
+    
+    should "include child groups" do
+      assert @gc.children.include? @gc1
+      assert @gc.children.include? @gc2
+    end
+    
+    should "generate correct product groups" do
+      assert_equal 2, @gc.groups.count
+      
+      assert @gc.permalink.contain? @gc.groups[0].permalink
+      assert @gc.permalink.contain? @gc.groups[1].permalink
+      assert_not_equal @gc.groups[1].permalink, @gc_groups[0].permalink
+    end
+
   end
 end
 
