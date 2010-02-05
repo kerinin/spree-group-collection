@@ -3,8 +3,8 @@ class GroupCollection < ActiveRecord::Base
 
   before_save :set_permalink
   
-  has_many :groups
-  has_many :children
+  has_many :groups, :through => :product_groupings
+  has_many :children, :through => :group_collection_branches, :as => :parent
   
   def from_url
   end
