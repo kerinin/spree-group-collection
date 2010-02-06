@@ -21,11 +21,12 @@ class GroupCollection < ActiveRecord::Base
   end
 
   def self.make_permalink(name,user=nil)
-    "#{name.to_url}#{user.id unless user.nil}"
+    "#{name.to_url}#{user.id unless user.nil?}"
   end
 
   def self.parse_globs( c_glob, pg_glob )
-    children, product_groups = c_glob.split('+'), pg_glob.split('+')
+    children = c_glob.nil? ? [] : c_glob.split('+')
+    product_groups = pg_glob.nil? ? [] : pg_glob.split('+')
 
     # NOTE: this will fail silently if a requested name isn't found
     children.map!{|permalink| child = GroupCollection.find_by_permalink(permalink); child ? child : nil }.compact! unless children.nil?
@@ -35,14 +36,22 @@ class GroupCollection < ActiveRecord::Base
   end
 
   def self.from_glob( glob )
-    c_glob, pg_glob = glob
+    if glob.count > 1
+      c_glob, pg_glob = glob
+    else
+      c_glob, pg_glob = glob[0], nil
+    end
+
     children, product_groups = GroupCollection.parse_globs(c_glob, pg_glob)
 
-    if product_groups.nil? && children.count == 1
+    if product_groups.empty? && children.count == 1
       # In case GroupCollection#show came through the glob for some reason
       return children[0]
     else
-      return GroupCollection.new( :children => children, :product_groups => product_groups)
+      gc = GroupCollection.new()
+      gc.children = children
+      gc.product_groups = product_groups
+      return gc
     end
   end
 

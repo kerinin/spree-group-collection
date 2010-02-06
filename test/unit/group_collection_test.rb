@@ -57,14 +57,16 @@ class GroupCollectionTest < Test::Unit::TestCase
     end
 
     should "not allow multiple identical permalinks" do
-      assert_raises ValidationError do
-        group1 = Factory :group_collection, :permalink => 'same'
-        group2 = Factory :group_collection, :permalink => 'same'
+      assert_raises ActiveRecord::RecordInvalid do
+        group1 = Factory :group_collection
+        group2 = Factory :group_collection
+        group2.permalink = group1.permalink
+        group2.save!
       end
     end
   end
 
-  context "from composite gc named url" do
+  context "from gc named url" do
     setup do
       @pg1 = Factory :product_group
       @pg2 = Factory :product_group
@@ -72,14 +74,12 @@ class GroupCollectionTest < Test::Unit::TestCase
       @gc1 = Factory :group_collection, :product_groups => [@pg1]
       @gc2 = Factory :group_collection, :product_groups => [@pg2]
 
-      @gc = GroupCollection.from_url("/c/#{@gc1.to_param}")
+      @gc = GroupCollection.from_glob( ["#{@gc1.to_param}"] )
     end
 
     should "be saved" do
       assert(@gc.kind_of?(GroupCollection),
-        "GroupCollection is a #{@og.class.name} instead of Group Collection")
-      assert(!@gc.new_record?,
-        "GroupCollection is not new record")
+        "GroupCollection is a #{@gc.class.name} instead of Group Collection")
       assert_equal @gc, @gc1
     end
   end
@@ -93,7 +93,7 @@ class GroupCollectionTest < Test::Unit::TestCase
       @gc1 = Factory :group_collection, :product_groups => [@pg1]
       @gc2 = Factory :group_collection, :product_groups => [@pg2]
 
-      @gc = GroupCollection.from_url("/c/#{@gc1.to_param}+#{@gc2.to_param}")
+      @gc = GroupCollection.from_glob( ["#{@gc1.to_param}+#{@gc2.to_param}"] )
     end
 
     should "not be saved and have sane defaults" do
@@ -121,7 +121,7 @@ class GroupCollectionTest < Test::Unit::TestCase
       @gc1 = Factory :group_collection, :product_groups => [@pg1]
       @gc2 = Factory :group_collection, :product_groups => [@pg2]
 
-      @gc = GroupCollection.from_url("/c//#{@pg1.permalink}+#{@pg2.permalink}")
+      @gc = GroupCollection.from_glob( ["","#{@pg1.permalink}+#{@pg2.permalink}"] )
     end
 
     should "not be saved and have sane defaults" do
@@ -149,7 +149,7 @@ class GroupCollectionTest < Test::Unit::TestCase
       @gc1 = Factory :group_collection
       @gc2 = Factory :group_collection
 
-      @gc = GroupCollection.from_url("/c/#{@gc1.to_param}+#{@gc2.to_param}/#{@pg1.permalink}+#{@pg2.permalink}")
+      @gc = GroupCollection.from_glob( ["#{@gc1.to_param}+#{@gc2.to_param}", "#{@pg1.permalink}+#{@pg2.permalink}" ] )
     end
 
     should "not be saved and have sane defaults" do
