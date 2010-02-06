@@ -11,14 +11,14 @@ class GroupCollectionExtension < Spree::Extension
     config.gem "shoulda", :version => '2.10.2'
     config.gem "factory_girl", :version => '1.2.3'
   end
-  
+
   def activate
 
     # make your helper avaliable in all views
     # Spree::BaseController.class_eval do
     #   helper YourHelper
     # end
-    
+
     # Define dynamic scopes
     # Dynamic scopes can be included in a Product Group by using the scope's name
     # Arguments are passed as usual, but the scope should have access to
@@ -27,19 +27,20 @@ class GroupCollectionExtension < Spree::Extension
     # Scopes::Dynamic.module_eval do
     #   def price_range(low=0, high=nil)
     #     scopes = []
-    #    
+    #
     #     scopes << ProductScope.new({
     #         :name => "price_between",
     #         :arguments => [low, high]
-    #     })   
-    #     
+    #     })
+    #
     #     scopes
     #   end
     #   module_function :price_range
     # end
-    
+
     User.class_eval do
-      has_many :group_collections
+      has_many :group_collections, :dependent => :destroy
     end
   end
 end
+

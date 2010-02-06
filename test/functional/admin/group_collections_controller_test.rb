@@ -1,15 +1,11 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.dirname(__FILE__) + '/../../test_helper'
 
-# editing!
-
-# ProductGroup Users!
-
-class GroupCollectionsControllerTest < ActionController::TestCase
+class Admin::GroupCollectionsControllerTest < ActionController::TestCase
   context "given data and user session" do
     setup do
       @admin = Factory :admin_user
       @user = Factory :user
-      UserSession.create(@user)
+      UserSession.create(@admin)
 
       @prod1 = Factory :product, :name => 'prod1'
       @prod2 = Factory :product, :name => 'prod2'
@@ -27,7 +23,7 @@ class GroupCollectionsControllerTest < ActionController::TestCase
       @gc2 = Factory :group_collection, :product_groups => [@pg3], :children => [@gc1]
     end
 
-    should_route :get, '/c', :controller => :group_collections, :action => :index
+    should_route :get, '/admin/c', :controller => :group_collections, :action => :index
     context "on GET to :index" do
       setup do
         get :index
@@ -52,10 +48,6 @@ class GroupCollectionsControllerTest < ActionController::TestCase
         assert assings[:group_collection].product_groups.include? @pg1
       end
 
-      should "set to the group collection's user to current" do
-        assert_equal @user, assigns[:group_collection].user
-      end
-
       should "update the existing group collection if permalink matches" do
         get :new, { :name => "new name", :children => "#{@gc1.to_param}"}
 
@@ -69,9 +61,9 @@ class GroupCollectionsControllerTest < ActionController::TestCase
         assert !( assigns[:group_collection].product_groups.include @pg1 )
     end
 
-    should_route :get, '/c/1', :controller => :group_collections, :action => :show, :id => 1
+    should_route :get, '/admin/c/1', :controller => :group_collections, :action => :show, :id => 1
     # NOTE: this seems to be failing due to a Shoulda problem
-    # should_route :get, '/c/1+2/a+b', :controller => :group_collections, :action => :show, "group_collection_query"=> ["1+2", "a+b"]
+    # should_route :get, '/admin/c/1+2/a+b', :controller => :group_collections, :action => :show, "group_collection_query"=> ["1+2", "a+b"]
     context "on GET to :show with named gc" do
       setup do
         get :show, :id => @gc1.to_param
@@ -89,52 +81,6 @@ class GroupCollectionsControllerTest < ActionController::TestCase
       should_assign_to :group_collection
       should_respond_with :success
     end
-
-    context "on GET to :edit" do
-      setup do
-        get :edit, :id => @gc1.to_param
-      end
-      should_assign_to :group_collection
-      should_respond_with :success
-    end
-
-    context "on GET to :edit for non-owned gc" do
-      setup do
-        get :edit, :id => @gc2.to_param
-      end
-      should_respond_with :unauthorized
-    end
-
-    context "on PUT to :update" do
-      setup do
-        put :update, {:id => @gc1.to_param, :children => "", :product_groups => ""}
-      end
-      should_assign_to :group_collection
-      should_respond_with :success
-    end
-
-    context "on PUT to :update for non-owned gc" do
-      setup do
-        put :update, {:id => @gc2.to_param, :children => "", :product_groups => ""}
-      end
-      should_respond_with :unauthorized
-    end
-
-    context "on GET to :destroy" do
-      setup do
-        get :destroy, {:id => @gc1.to_param}
-      end
-      should_assign_to :group_collection
-      should_respond_with :success
-    end
-
-    context "on GET to :destroy for non-owned gc" do
-      setup do
-        get :destroy, {:id => @gc2.to_param}
-      end
-      should_respond_with :unauthorized
-    end
-
   end
 
   context "given data and no user session" do
