@@ -10,17 +10,20 @@ class GroupCollectionsController < Spree::BaseController
     wants.html { render :action => :show }
   end
 
-  def create
-    permalink = GroupCollection.make_permalink( params[:name], current_user)
-    @group_collection = GroupCollection.find_or_create_by_permalink( permalink )
+  create.before do
     @group_collection.name = params[:name]
     @group_collection.user = current_user
 
     @group_collection.children = params[:children]
     @group_collection.product_groups = params[:product_groups]
+  end
 
-    # NOTE: bring this back in line with the original in case you
-    # want to use before, after, whatever
+  def create
+    permalink = GroupCollection.make_permalink( params[:name], current_user)
+    @group_collection = GroupCollection.find_or_create_by_permalink( permalink )
+
+    before :create
+
     if @group_collection.save
       set_flash :create
       response_for :create
@@ -34,9 +37,6 @@ class GroupCollectionsController < Spree::BaseController
     @group_collection = GroupCollection.new()
     @group_collection.children = params[:children]
     @group_collection.product_groups = params[:product_groups]
-
-    @children = params[:children]
-    @product_groups = params[:product_groups]
 
     render :action => :show
   end
