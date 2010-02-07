@@ -51,7 +51,7 @@ class GroupCollectionsControllerTest < ActionController::TestCase
 
     context "on POST to :create" do
       setup do
-        post :create, { :name => "new name", :children => "#{@gc1.to_param}+#{@gc2.to_param}", :product_groups => "#{@pg1.permalink}" }
+        post :create, { :name => "new name", :children => [@gc1.to_param,@gc2.to_param], :product_groups => [@pg1.permalink] }
       end
       should_assign_to :group_collection
       should_respond_with :success
@@ -102,7 +102,7 @@ class GroupCollectionsControllerTest < ActionController::TestCase
 
     context "on GET to :build with children + product_groups" do
       setup do
-        get :build, { :children => "#{@gc1.to_param}+#{@gc2.to_param}", :product_groups => "#{@pg1.permalink}+#{@pg2.permalink}" }
+        get :build, { :children => [@gc1.to_param,@gc2.to_param], :product_groups => [@pg1.permalink,@pg2.permalink] }
       end
       should_assign_to :group_collection
       should_respond_with :success
@@ -127,7 +127,7 @@ class GroupCollectionsControllerTest < ActionController::TestCase
 
     context "on GET to :build with children" do
       setup do
-        get :build, :children => "#{@gc1.to_param}+#{@gc2.to_param}"
+        get :build, :children => [@gc1.to_param,@gc2.to_param]
       end
       should_assign_to :group_collection
       should_respond_with :success
@@ -136,7 +136,7 @@ class GroupCollectionsControllerTest < ActionController::TestCase
 
     context "on GET to :build with product_groups" do
       setup do
-        get :build, :product_groups => "#{@pg1.permalink}+#{@pg2.permalink}"
+        get :build, :product_groups => [@pg1.permalink,@pg2.permalink]
       end
       should_assign_to :group_collection
       should_respond_with :success
