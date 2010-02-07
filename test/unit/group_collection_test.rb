@@ -1,5 +1,11 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
+# NOTE: an even better approach might be to define functions to
+# parse the glob elements (parse_children, parse_product_groups)
+# and then call them in the controller.  Putting globs in the model
+# makes assumptions about the routing structure - this should really
+# be separated from the model
+
 class GroupCollectionTest < Test::Unit::TestCase
   context "A Group Collection" do
     setup do

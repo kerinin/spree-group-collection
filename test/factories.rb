@@ -4,6 +4,10 @@ Factory.define(:role) do |record|
   record.name { Factory.next(:role_sequence) }
 end
 
+Factory.define(:user_role, :parent => :role) do |r|
+  r.name "user"
+end
+
 Factory.define(:admin_role, :parent => :role) do |r|
   r.name "admin"
 end
@@ -17,6 +21,7 @@ Factory.define(:user) do |record|
   record.login { Factory.next(:login) }
   record.password "spree"
   record.password_confirmation "spree"
+  record.roles { [Role.find_by_name("user") || Factory(:user_role) ] }
 end
 
 Factory.define(:admin_user, :parent => :user) do |u|

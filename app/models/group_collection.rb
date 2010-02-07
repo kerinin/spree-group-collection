@@ -68,7 +68,7 @@ class GroupCollection < ActiveRecord::Base
   end
 
   def to_s
-    "<GroupCollection#{id && "[#{id}]"}:'#{to_url}'>"
+    "<GroupCollection#{id && "[#{id}]"}:'#{self.name}'>"
   end
 end
 
