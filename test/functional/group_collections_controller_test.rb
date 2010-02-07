@@ -71,6 +71,21 @@ class GroupCollectionsControllerTest < ActionController::TestCase
       end
     end
 
+    context "on repeated POST to :create" do
+      setup do
+        post :create, { :name => @gc1.name, :children => "#{@gc2.to_param}", :product_groups => "#{@pg3.permalink}" }
+      end
+      should_respond_with :success
+      should_assign_to :group_collection
+
+      should "update the existing group collection" do
+        assert assigns["group_collection"].children.include? @gc2
+        assert assigns["group_collection"].product_groups.include? @pg3
+        assert !( assigns["group_collection"].product_groups.include? @pg1 )
+        assert !( assigns["group_collection"].product_groups.include? @pg2 )
+      end
+    end
+
     should_route :get, '/c/1', :controller => :group_collections, :action => :show, :id => 1
     # NOTE: this seems to be failing due to a Shoulda problem
     # should_route :get, '/c/1+2', :controller => :group_collections, :action => :show, :group_collection_query => ["1+2"]
