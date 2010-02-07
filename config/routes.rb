@@ -2,7 +2,8 @@
 
 # map.namespace :admin do |admin|
 #   admin.resources :whatever
-# end  
+# end
 
-map.resources :group_collections, :as => "c", :requirements => {:id => /[^\+]+/}
-map.gc_search '/c/*group_collection_query', :controller => :group_collections, :action => :show
+map.connect 'c/:action', :controller => "group_collections"
+map.resources :group_collections, :as => "c"
+

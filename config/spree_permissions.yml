@@ -47,10 +47,10 @@
   permission1:
     roles : [user]
     options :
-      except : [index, show]
+      except : [index, show, build]
   permission2:
     roles : [admin]
     options :
-      except : [index, show, new, create]
+      except : [index, show, build, new, create]
       unless : "current_user == object.user"
 

@@ -1,11 +1,5 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-# NOTE: an even better approach might be to define functions to
-# parse the glob elements (parse_children, parse_product_groups)
-# and then call them in the controller.  Putting globs in the model
-# makes assumptions about the routing structure - this should really
-# be separated from the model
-
 class GroupCollectionTest < Test::Unit::TestCase
   context "A Group Collection" do
     setup do
@@ -69,114 +63,6 @@ class GroupCollectionTest < Test::Unit::TestCase
         group2.permalink = group1.permalink
         group2.save!
       end
-    end
-  end
-
-  context "from gc named url" do
-    setup do
-      @pg1 = Factory :product_group
-      @pg2 = Factory :product_group
-
-      @gc1 = Factory :group_collection, :product_groups => [@pg1]
-      @gc2 = Factory :group_collection, :product_groups => [@pg2]
-
-      @gc = GroupCollection.from_glob( ["#{@gc1.to_param}"] )
-    end
-
-    should "be saved" do
-      assert(@gc.kind_of?(GroupCollection),
-        "GroupCollection is a #{@gc.class.name} instead of Group Collection")
-      assert_equal @gc, @gc1
-    end
-  end
-
-
-  context "from composite gc named url" do
-    setup do
-      @pg1 = Factory :product_group
-      @pg2 = Factory :product_group
-
-      @gc1 = Factory :group_collection, :product_groups => [@pg1]
-      @gc2 = Factory :group_collection, :product_groups => [@pg2]
-
-      @gc = GroupCollection.from_glob( ["#{@gc1.to_param}+#{@gc2.to_param}"] )
-    end
-
-    should "not be saved and have sane defaults" do
-      assert(@gc.kind_of?(GroupCollection),
-        "GroupCollection is a #{@og.class.name} instead of Group Collection")
-      assert(@gc.new_record?,
-        "GroupCollection is not new record")
-      assert(@gc.name.blank?,
-        "GroupCollection.name is not blank but #{@gc.name}")
-      assert(@gc.permalink.blank?,
-        "ObjectGroup.permalink is not blank but #{@gc.permalink}")
-    end
-
-    should "include the correct child collections" do
-      assert @gc.children.include? @gc1
-      assert @gc.children.include? @gc2
-    end
-  end
-
-  context "from composite pg named url" do
-    setup do
-      @pg1 = Factory :product_group
-      @pg2 = Factory :product_group
-
-      @gc1 = Factory :group_collection, :product_groups => [@pg1]
-      @gc2 = Factory :group_collection, :product_groups => [@pg2]
-
-      @gc = GroupCollection.from_glob( ["","#{@pg1.permalink}+#{@pg2.permalink}"] )
-    end
-
-    should "not be saved and have sane defaults" do
-      assert(@gc.kind_of?(GroupCollection),
-        "GroupCollection is a #{@og.class.name} instead of Group Collection")
-      assert(@gc.new_record?,
-        "GroupCollection is not new record")
-      assert(@gc.name.blank?,
-        "GroupCollection.name is not blank but #{@gc.name}")
-      assert(@gc.permalink.blank?,
-        "ObjectGroup.permalink is not blank but #{@gc.permalink}")
-    end
-
-    should "include the correct product_groups" do
-      assert @gc.product_groups.include? @pg1
-      assert @gc.product_groups.include? @pg2
-    end
-  end
-
-  context "from composite gc+pg named url" do
-    setup do
-      @pg1 = Factory :product_group
-      @pg2 = Factory :product_group
-
-      @gc1 = Factory :group_collection
-      @gc2 = Factory :group_collection
-
-      @gc = GroupCollection.from_glob( ["#{@gc1.to_param}+#{@gc2.to_param}", "#{@pg1.permalink}+#{@pg2.permalink}" ] )
-    end
-
-    should "not be saved and have sane defaults" do
-      assert(@gc.kind_of?(GroupCollection),
-        "GroupCollection is a #{@og.class.name} instead of Group Collection")
-      assert(@gc.new_record?,
-        "GroupCollection is not new record")
-      assert(@gc.name.blank?,
-        "GroupCollection.name is not blank but #{@gc.name}")
-      assert(@gc.permalink.blank?,
-        "ObjectGroup.permalink is not blank but #{@gc.permalink}")
-    end
-
-    should "include the correct child collections" do
-      assert @gc.children.include? @gc1
-      assert @gc.children.include? @gc2
-    end
-
-    should "include the correct product_groups" do
-      assert @gc.product_groups.include? @pg1
-      assert @gc.product_groups.include? @pg2
     end
   end
 end

@@ -88,9 +88,6 @@ class GroupCollectionsControllerTest < ActionController::TestCase
     end
 
     should_route :get, '/c/1', :controller => :group_collections, :action => :show, :id => 1
-    # NOTE: this seems to be failing due to a Shoulda problem
-    # should_route :get, '/c/1+2', :controller => :group_collections, :action => :show, :group_collection_query => ["1+2"]
-    # should_route :get, '/c/1+2/a+b', :controller => :group_collections, :action => :show, "group_collection_query"=> ["1+2", "a+b"]
     context "on GET to :show with named gc" do
       setup do
         get :show, :id => @gc1.to_param
@@ -103,13 +100,47 @@ class GroupCollectionsControllerTest < ActionController::TestCase
       end
     end
 
-    context "on GET to :show with composite gc" do
+    context "on GET to :build with children + product_groups" do
       setup do
-        get :show, :group_collection_query => ["#{@gc1.to_param}+#{@gc2.to_param}", "#{@pg1.permalink}+#{@pg2.permalink}"]
+        get :build, { :children => "#{@gc1.to_param}+#{@gc2.to_param}", :product_groups => "#{@pg1.permalink}+#{@pg2.permalink}" }
       end
-
       should_assign_to :group_collection
       should_respond_with :success
+      should_render_template "show"
+
+      should "not be saved and have sane defaults" do
+        assert(assigns["group_collection"].kind_of?(GroupCollection),
+          "GroupCollection is a #{assigns["group_collection"].class.name} instead of Group Collection")
+        assert(assigns["group_collection"].new_record?,
+          "GroupCollection is not new record")
+        assert(assigns["group_collection"].name.blank?,
+          "GroupCollection.name is not blank but #{assigns["group_collection"].name}")
+        assert(assigns["group_collection"].permalink.blank?,
+          "ObjectGroup.permalink is not blank but #{assigns["group_collection"].permalink}")
+      end
+
+      should "include the correct child collections" do
+        assert assigns["group_collection"].children.include? @gc1
+        assert assigns["group_collection"].children.include? @gc2
+      end
+    end
+
+    context "on GET to :build with children" do
+      setup do
+        get :build, :children => "#{@gc1.to_param}+#{@gc2.to_param}"
+      end
+      should_assign_to :group_collection
+      should_respond_with :success
+      should_render_template "show"
+    end
+
+    context "on GET to :build with product_groups" do
+      setup do
+        get :build, :product_groups => "#{@pg1.permalink}+#{@pg2.permalink}"
+      end
+      should_assign_to :group_collection
+      should_respond_with :success
+      should_render_template "show"
     end
 
     context "on GET to :edit" do
