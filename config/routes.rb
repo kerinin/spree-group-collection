@@ -4,6 +4,6 @@
 #   admin.resources :whatever
 # end
 
-map.connect 'c/build', :controller => "group_collections", :action => "build"
+map.build_group_collection 'c/build', :controller => "group_collections", :action => "build"
 map.resources :group_collections, :as => "c"
 
