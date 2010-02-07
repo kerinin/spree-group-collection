@@ -79,6 +79,7 @@ class GroupCollectionsControllerTest < ActionController::TestCase
       should_assign_to :group_collection
 
       should "update the existing group collection" do
+        assert_equal @gc1.permalink, assigns["group_collection"].permalink
         assert assigns["group_collection"].children.include? @gc2
         assert assigns["group_collection"].product_groups.include? @pg3
         assert !( assigns["group_collection"].product_groups.include? @pg1 )

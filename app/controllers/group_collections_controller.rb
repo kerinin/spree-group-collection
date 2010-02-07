@@ -16,7 +16,10 @@ class GroupCollectionsController < Spree::BaseController
   end
 
   def create
-    @group_collection = GroupCollection.new( :name => params[:name], :user => current_user )
+    permalink = GroupCollection.make_permalink( params[:name], current_user)
+    @group_collection = GroupCollection.find_or_create_by_permalink( permalink )
+    @group_collection.name = params[:name]
+    @group_collection.user = current_user
 
     children, product_groups = GroupCollection.parse_globs( params[:children], params[:product_groups] )
     @group_collection.children = children
