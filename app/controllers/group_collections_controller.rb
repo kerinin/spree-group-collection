@@ -50,14 +50,12 @@ class GroupCollectionsController < Spree::BaseController
 
   def load_children
     params[:children] = [] if params[:children].nil?
-    children_array = params[:children].split('+')
-    params[:children] = children_array.map{|permalink| child = GroupCollection.find_by_permalink(permalink); child ? child : nil }.compact.uniq
+    params[:children] = params[:children].map{|permalink| child = GroupCollection.find_by_permalink(permalink); child ? child : nil }.compact.uniq
   end
 
   def load_product_groups
     params[:product_groups] = [] if params[:product_groups].nil?
-    product_groups_array = params[:product_groups].split('+')
-    params[:product_groups] = product_groups_array.map{|permalink| pg = ProductGroup.find_by_permalink(permalink); pg ? pg : nil }.compact.uniq
+    params[:product_groups] = params[:product_groups].map{|permalink| pg = ProductGroup.find_by_permalink(permalink); pg ? pg : nil }.compact.uniq
   end
 end
 
