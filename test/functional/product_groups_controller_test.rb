@@ -36,21 +36,31 @@ class ProductGroupsControllerTest < ActionController::TestCase
 
     context "on POST to :create" do
       setup do
-        post :create, { :group_collection => { :name => "new name" }, :product_scope => { 'name_like'=>'foo', 'price_between' => '5,10' }, :order_scope => 'ascend_price' }
+        post( :create, {
+          :product_group => { :name => "create name" },
+          :product_scope => {
+            'master_price_lt'=>{:arguments =>'10', :active => true},
+            'master_price_gt' => {:arguments => '5', :active => true}
+          },
+          :order_scope => 'descend_by_name'
+          }
+        )
       end
       should_assign_to :product_group
-      should_respond_with :success
-      should_render_template 'show'
+      #should_respond_with :success
+      #should_render_template 'show'
+      should_redirect_to( 'product_group#edit' ) { product_group_url( assigns[:product_group] ) }
       should_set_the_flash_to "Successfully created!"
 
       should "create a new named product group" do
-        assert_equal "new name", assigns['product_group'].name
-        assert_equal "new-name#{@user.id}", assigns['product_group'].permalink
-        assert_equal assigns['product_group'].product_scopes[0].name, 'name_like'
-        assert_equal assigns['product_group'].product_scopes[0].arguments, 'foo'
-        assert_equal assigns['product_group'].product_scopes[1].name, 'price_between'
-        assert_equal assigns['product_group'].product_scopes[1].arguments, '5,10'
-        assert_equal assigns['product_group'].order, 'ascend_price'
+        assert_equal "create name", assigns['product_group'].name
+        assert_equal "create-name#{@user.id}", assigns['product_group'].permalink
+        assert_equal assigns['product_group'].product_scopes[0].name, 'master_price_gt'
+        assert_equal assigns['product_group'].product_scopes[0].arguments, '5'
+        assert_equal assigns['product_group'].product_scopes[1].name, 'master_price_lt'
+        assert_equal assigns['product_group'].product_scopes[1].arguments, '10'
+        assert_equal assigns['product_group'].product_scopes[2].name, 'descend_by_name'
+        assert_equal 3, assigns['product_group'].product_scopes.count
       end
 
       should "set to the product group's user to current" do
@@ -79,8 +89,7 @@ class ProductGroupsControllerTest < ActionController::TestCase
 
     context "on PUT to :update" do
       setup do
-        put :update, { :id => @pg1.to_param, :product_group => { :name => "new name" }, :product_scope => { 'master_price_lt'=>'10', 'master_price_gt' => '5' }, :order_scope => 'descend_by_name' }
-        puts assigns['product_group'].product_scopes
+        put :update, { :id => @pg1.to_param, :product_group => { :name => "new name" }, :product_scope => { 'master_price_lt'=>{:arguments =>'10', :active => true}, 'master_price_gt' => {:arguments => '5', :active => true} }, :order_scope => 'descend_by_name' }
       end
       should_assign_to :product_group
       should_respond_with :redirect
@@ -88,12 +97,12 @@ class ProductGroupsControllerTest < ActionController::TestCase
 
       should "update parameters" do
         assert_equal assigns['product_group'].name, "new name"
-        assert_equal assigns['product_group'].product_scopes[0].name, 'master_price_lt'
-        assert_equal assigns['product_group'].product_scopes[0].arguments, '10'
-        assert_equal assigns['product_group'].product_scopes[1].name, 'master_price_gt'
-        assert_equal assigns['product_group'].product_scopes[1].arguments, '5'
-        assert_equal assigns['product_group'].order, 'ascend_price'
-        assert_nil assigns['product_group'].product_scopes[2]
+        assert_equal assigns['product_group'].product_scopes[1].name, 'master_price_lt'
+        assert_equal assigns['product_group'].product_scopes[1].arguments, '10'
+        assert_equal assigns['product_group'].product_scopes[0].name, 'master_price_gt'
+        assert_equal assigns['product_group'].product_scopes[0].arguments, '5'
+        assert_equal assigns['product_group'].product_scopes[2].name, 'descend_by_name'
+        assert_equal 3, assigns['product_group'].product_scopes.count
       end
     end
 

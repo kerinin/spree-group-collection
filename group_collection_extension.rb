@@ -45,6 +45,10 @@ class GroupCollectionExtension < Spree::Extension
 
     ProductGroup.class_eval do
       belongs_to :user
+
+      def set_permalink
+        self.permalink = "#{self.name.to_url}#{user.id unless user.nil?}"
+      end
     end
 
   end

@@ -11,9 +11,6 @@ class ProductGroupsController < Spree::BaseController
 
   update.before do
     @product_group.user = current_user
-    @product_group.product_scopes = []
-    @product_group.product_scopes_attributes = params[:product_group][:product_scopes_attributes]
-    @product_group.save!
   end
 
   private
