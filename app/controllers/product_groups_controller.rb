@@ -5,6 +5,17 @@ class ProductGroupsController < Spree::BaseController
 
   actions :all
 
+  create.before do
+    @product_group.user = current_user
+  end
+
+  update.before do
+    @product_group.user = current_user
+    @product_group.product_scopes = []
+    @product_group.product_scopes_attributes = params[:product_group][:product_scopes_attributes]
+    @product_group.save!
+  end
+
   private
 
   def collection
@@ -17,15 +28,18 @@ class ProductGroupsController < Spree::BaseController
   end
 
   def set_nested_product_scopes
-    result = []
-    params[:product_scope].each_pair do |k, v|
-      result << {:name => k, :arguments=> v[:arguments]} if v[:active]
+    if params[:product_scope]
+      params[:product_group] ||= {}
+      result = []
+      params[:product_scope].each_pair do |k, v|
+        result << {:name => k, :arguments=> v[:arguments]} if v[:active]
+      end
+      if os = params[:order_scope]
+        result << {:name => os, :arguments => []}
+      end
+      object && object.product_scopes.clear
+      params[:product_group][:product_scopes_attributes] = result
     end
-    if os = params[:order_scope]
-      result << {:name => os, :arguments => []}
-    end
-    object && object.product_scopes.clear
-    params[:product_group][:product_scopes_attributes] = result
   end
 end
 

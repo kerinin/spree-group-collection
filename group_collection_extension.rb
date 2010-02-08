@@ -40,7 +40,13 @@ class GroupCollectionExtension < Spree::Extension
 
     User.class_eval do
       has_many :group_collections, :dependent => :destroy
+      has_many :product_groups, :dependent => :destroy
     end
+
+    ProductGroup.class_eval do
+      belongs_to :user
+    end
+
   end
 end
 
