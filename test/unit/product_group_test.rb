@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class GroupCollectionTest < Test::Unit::TestCase
+class ProductGroupTest < Test::Unit::TestCase
 
   context "A product group" do
     setup do
@@ -14,6 +14,13 @@ class GroupCollectionTest < Test::Unit::TestCase
 
     should "generate user-specific permalinks" do
       assert_equal "pg-name#{@user.id}", @pg.permalink
+    end
+
+    teardown do
+      User.delete_all
+      Product.delete_all
+      ProductGroup.delete_all
+      ProductScope.delete_all
     end
   end
 
@@ -38,6 +45,7 @@ class GroupCollectionTest < Test::Unit::TestCase
     end
 
     teardown do
+      User.delete_all
       Product.delete_all
       ProductGroup.delete_all
       ProductScope.delete_all

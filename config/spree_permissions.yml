@@ -54,3 +54,12 @@
       except : [index, show, build, new, create]
       unless : "current_user == object.user"
 
+'ProductGroupsController':
+  permission1:
+    roles : [user]
+  permission2:
+    roles : [admin]
+    options :
+      except : [new, create]
+      unless : "current_user == object.user"
+

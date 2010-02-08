@@ -1,7 +1,5 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-# ProductGroup Users!
-
 class GroupCollectionsControllerTest < ActionController::TestCase
   context "given data and user session" do
     setup do
