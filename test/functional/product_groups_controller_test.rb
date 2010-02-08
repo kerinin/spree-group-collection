@@ -47,9 +47,7 @@ class ProductGroupsControllerTest < ActionController::TestCase
         )
       end
       should_assign_to :product_group
-      #should_respond_with :success
-      #should_render_template 'show'
-      should_redirect_to( 'product_group#edit' ) { product_group_url( assigns[:product_group] ) }
+      should_redirect_to( 'product_group#show' ) { product_group_url( assigns['product_group'] ) }
       should_set_the_flash_to "Successfully created!"
 
       should "create a new named product group" do

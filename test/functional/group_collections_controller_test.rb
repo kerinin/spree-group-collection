@@ -54,9 +54,9 @@ class GroupCollectionsControllerTest < ActionController::TestCase
         post :create, { :group_collection => { :name => "new name", :children => [@gc1.to_param,@gc2.to_param], :product_groups => [@pg1.permalink] } }
       end
       should_assign_to :group_collection
-      should_respond_with :success
-      should_render_template 'show'
+      should_redirect_to( 'group_collection#show' ) { group_collection_url( assigns['group_collection'] ) }
       should_set_the_flash_to "Successfully created!"
+
 
       should "create a new named group collection" do
         assert_equal "new name", assigns['group_collection'].name
