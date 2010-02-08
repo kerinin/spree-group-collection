@@ -51,7 +51,7 @@ class GroupCollectionsControllerTest < ActionController::TestCase
 
     context "on POST to :create" do
       setup do
-        post :create, { :group_collection => { :name => "new name", :children => [@gc1.to_param,@gc2.to_param], :product_groups => [@pg1.permalink] } }
+        post :create, { :group_collection => { :name => "new name"}, :children => [@gc1.to_param,@gc2.to_param], :product_groups => [@pg1.permalink] }
       end
       should_assign_to :group_collection
       should_redirect_to( 'group_collection#show' ) { group_collection_url( assigns['group_collection'] ) }
@@ -73,9 +73,8 @@ class GroupCollectionsControllerTest < ActionController::TestCase
 
     context "on repeated POST to :create" do
       setup do
-        post :create, { :group_collection => { :name => @gc1.name, :children => "#{@gc2.to_param}", :product_groups => "#{@pg3.permalink}" } }
+        post :create, { :group_collection => { :name => @gc1.name }, :children => [@gc2.to_param], :product_groups => [@pg3.permalink] }
       end
-      should_respond_with :success
       should_assign_to :group_collection
 
       should "update the existing group collection" do
@@ -164,7 +163,7 @@ class GroupCollectionsControllerTest < ActionController::TestCase
 
     context "on PUT to :update" do
       setup do
-        put :update, {:id => @gc1.permalink, :group_collection => { :children => "", :product_groups => "" } }
+        put :update, {:id => @gc1.permalink, :children => [], :product_groups => [] }
       end
       should_assign_to :group_collection
       should_respond_with :redirect
@@ -178,7 +177,7 @@ class GroupCollectionsControllerTest < ActionController::TestCase
 
     context "on PUT to :update for non-owned gc" do
       setup do
-        put :update, {:id => @gc2.to_param, :group_collection => { :children => "", :product_groups => ""} }
+        put :update, {:id => @gc2.to_param, :children => [], :product_groups => [] }
       end
       should_respond_with :redirect
       should_redirect_to( "Authorization Failure" ) { "/user_sessions/authorization_failure" }
