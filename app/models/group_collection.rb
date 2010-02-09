@@ -6,11 +6,10 @@ class GroupCollection < ActiveRecord::Base
 
   belongs_to :user
 
-  has_many :product_groupings, :dependent => :destroy
-  has_many :product_groups, :through => :product_groupings
+  has_many :collecteds, :dependent => :destroy
 
-  has_many :group_collection_branches, :foreign_key => :parent_id, :dependent => :destroy
-  has_many :children, :through => :group_collection_branches, :source => :child
+  has_many :product_groups, :through => :collecteds, :source => :group, :source_type => "ProductGroup"
+  has_many :children, :through => :collecteds, :source => :group, :source_type => "GroupCollection"
 
   before_save :set_permalink
 
