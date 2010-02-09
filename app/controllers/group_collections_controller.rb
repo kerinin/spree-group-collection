@@ -7,11 +7,7 @@ class GroupCollectionsController < Spree::BaseController
   actions :all, :build
 
   create.before do
-    #@group_collection.name = params[:name]
     @group_collection.user = current_user
-
-    #@group_collection.children = params[:children]
-    #@group_collection.product_groups = params[:product_groups]
   end
 
   def build
@@ -22,22 +18,19 @@ class GroupCollectionsController < Spree::BaseController
     render :action => :show
   end
 
-  update.before do
-    #@group_collection.children = params[:children]
-    #@group_collection.product_groups = params[:product_groups]
-  end
-
   private
 
   def build_object
+    # NOTE: ok, so this is a bit of a hack
+    # The idea is that if we save an object with an existing name, it will overwrite
+    # the original rather than making a new object.
     if params[:group_collection] && params[:group_collection][:name]
       permalink = GroupCollection.make_permalink( params[:group_collection][:name], current_user)
       @object = GroupCollection.find_or_create_by_permalink( permalink )
+      object.update_attributes object_params
     else
-      @object = GroupCollection.new()
+      @object = GroupCollection.new(object_params)
     end
-    @group_collection = @object
-    @object
   end
 
   def load_children
