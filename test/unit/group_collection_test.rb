@@ -19,12 +19,25 @@ class GroupCollectionTest < Test::Unit::TestCase
 
       @gc1 = Factory :group_collection, :product_groups => [@pg1, @pg2], :user => @user, :name => "group collection"
       @gc2 = Factory :group_collection, :product_groups => [@pg3], :children => [@gc1]
+      @gc3 = Factory :group_collection, :user => @user
     end
 
     teardown do
       User.delete_all
       ProductGroup.delete_all
       GroupCollection.delete_all
+    end
+
+    should "add new GC instances to the end of the list" do
+      assert @user.group_collections.first == @gc1
+      assert @user.group_collections.last == @gc3
+    end
+
+    should "allow GC instances to be re-positioned" do
+      @gc3.move_higher
+      @gc3.save!
+      assert @user.group_collections.first == @gc3
+      assert @user.group_collections.last == @gc1
     end
 
     should "have some values" do

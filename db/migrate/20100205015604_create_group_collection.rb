@@ -7,6 +7,7 @@ class CreateGroupCollection < ActiveRecord::Migration
       gc.string :name
       gc.string :permalink
       gc.string :order
+      gc.integer :position
 
       gc.belongs_to :user
 
@@ -15,6 +16,7 @@ class CreateGroupCollection < ActiveRecord::Migration
     add_index :group_collections, :name
     add_index :group_collections, :permalink
     add_index :group_collections, :user_id
+    add_index :group_collections, :position
 
     create_table :collecteds do |g|
       g.belongs_to :group_collection
@@ -32,6 +34,7 @@ class CreateGroupCollection < ActiveRecord::Migration
     remove_index :group_collections, :name
     remove_index :group_collections, :permalink
     remove_index :group_collections, :user_id
+    remove_index :group_collections, :position
     drop_table :group_collections
 
     remove_index :collecteds, :group_collection_id

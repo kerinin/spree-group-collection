@@ -39,7 +39,7 @@ class GroupCollectionExtension < Spree::Extension
     # end
 
     User.class_eval do
-      has_many :group_collections, :dependent => :destroy
+      has_many :group_collections, :dependent => :destroy, :order => :position
       has_many :product_groups, :dependent => :destroy
     end
 

@@ -1,5 +1,7 @@
 class GroupCollection < ActiveRecord::Base
   require "stringex"
+  acts_as_list :scope => 'user_id #{user_id ? (\'== \'+user_id.to_s ) : \'IS NULL\'}'
+  default_scope :order => :position
 
   validates_presence_of :name
   validates_uniqueness_of :permalink, :allow_nil => true, :allow_blank => true
