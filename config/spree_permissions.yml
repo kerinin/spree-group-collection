@@ -47,19 +47,21 @@
   permission1:
     roles : [user]
     options :
-      except : [index, show, build]
+      only : [new, edit, create, update, destroy]
   permission2:
     roles : [admin]
     options :
-      except : [index, show, build, new, create]
+      only : [update, destroy]
       unless : "current_user == object.user"
 
 'ProductGroupsController':
   permission1:
     roles : [user]
+    options :
+      only : [new, edit, create, update, destroy]
   permission2:
     roles : [admin]
     options :
-      except : [new, create]
+      only : [update, destroy]
       unless : "current_user == object.user"
 
