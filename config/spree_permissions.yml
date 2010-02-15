@@ -51,7 +51,7 @@
   permission2:
     roles : [admin]
     options :
-      only : [update, destroy]
+      only : [edit, update, destroy]
       unless : "current_user == object.user"
 
 'ProductGroupsController':
@@ -62,6 +62,6 @@
   permission2:
     roles : [admin]
     options :
-      only : [update, destroy]
+      only : [edit, update, destroy]
       unless : "current_user == object.user"
 
