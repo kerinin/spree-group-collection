@@ -25,6 +25,10 @@ class GroupCollection < ActiveRecord::Base
     "#{name.to_url}#{user.id unless user.nil?}"
   end
 
+  def all_groups
+    self.all_product_groups
+  end
+
   def all_product_groups
     [ self.product_groups + self.children.map{ |gc| gc.all_product_groups } ].flatten.uniq
   end

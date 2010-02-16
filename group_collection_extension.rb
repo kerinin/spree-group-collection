@@ -51,6 +51,11 @@ class GroupCollectionExtension < Spree::Extension
       end
     end
 
+    GroupCollectionsController.class_eval do
+      def index
+        redirect_to group_collection_url( GroupCollection.first )
+      end
+    end
   end
 end
 
